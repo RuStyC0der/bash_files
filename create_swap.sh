@@ -47,13 +47,13 @@ if [[ $DO_STATUS = 'YES' ]]; then
         continue
     fi
 
-    if [[ $USER_ANSWER_SWAP_FILESIZE -ge $FREE_DISK ]]; then
-        echo "The filesize of SWAP is too big. Not enough disk spase"
-        exit 1
-    fi
-
 fi
 done
+
+if [[ $USER_ANSWER_SWAP_FILESIZE -ge $FREE_DISK ]]; then
+    echo "The filesize of SWAP is too big. Not enough disk spase"
+    exit 1
+fi
 
 while [ 1 ]
 do
