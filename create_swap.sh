@@ -36,7 +36,8 @@ do
 if [[ $DO_STATUS = 'YES' ]]; then
 
     FREE_DISK=`df -m /|awk '{print $4}'|grep -v 'Avail'`
-    echo "[$FREE_DISK MB free] Input filesize of swapfile in MB (example. If need add 1Gb of SWAP - type 1024)"
+    echo "[$FREE_DISK MB is free on server]" 
+    echo "Input filesize of swapfile in MB [Example][1Gb - 1204Mb] If need add 1Gb of SWAP - type 1024, 2Gb - type 2048"
     read USER_ANSWER_SWAP_FILESIZE
 
     if (echo "$USER_ANSWER_SWAP_FILESIZE" | grep -E -q "^?[0-9]+$"); then
@@ -50,10 +51,10 @@ if [[ $DO_STATUS = 'YES' ]]; then
 fi
 done
 
-if [[ $USER_ANSWER_SWAP_FILESIZE -ge $FREE_DISK ]]; then
-    echo "The filesize of SWAP is too big. Not enough disk spase"
-    exit 1
-fi
+    if [[ $USER_ANSWER_SWAP_FILESIZE -ge $FREE_DISK ]]; then
+        echo "The filesize of SWAP is too big. Not enough disk spase"
+        exit 1
+    fi
 
 while [ 1 ]
 do
@@ -85,9 +86,9 @@ if [[ $STATUS_CREATE_SWAP = 'NEED_TO_CREATE' ]]; then
     mkswap $ROOT_SWAP_DIR$SWAP_FILE_NAME
     swapon $ROOT_SWAP_DIR$SWAP_FILE_NAME
     timestamp=$(date +%s)
-    cp -rp /etc/fstab /etc/fstab$timestamp
+    cp -rp /etc/fstab /etc/fstab_$timestamp
     echo "$ROOT_SWAP_DIR$SWAP_FILE_NAME swap swap sw 0 0" >> /etc/fstab
-    cp -rp /etc/sysctl.conf /etc/sysctl.conf$timestamp
+    cp -rp /etc/sysctl.conf /etc/sysctl.conf_$timestamp
     echo 'vm.swappiness=5' >> /etc/sysctl.conf
     sysctl -p
     echo "[DONE]"
